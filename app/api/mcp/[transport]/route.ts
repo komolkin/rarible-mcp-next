@@ -17,20 +17,24 @@ const handler = createMcpHandler(
       { itemId: z.string().min(3) },
       async ({ itemId }) => {
         const data = await rarible.nftItems.getItemById({ itemId });
-        return { content: [{ type: "json", json: data }] };
+        return {
+          content: [{ type: "text", text: JSON.stringify(data, null, 2) }],
+        };
       }
     );
 
-    // Example: list NFTs owned by an address (CHAIN:0x...)
+    // Example: list collections owned by an address (CHAIN:0x...)
     server.tool(
-      "rarible_get_items_by_owner",
-      "List NFTs owned by an address on a chain",
+      "rarible_get_collections_by_owner",
+      "List NFT collections owned by an address on a chain",
       { owner: z.string().describe("e.g. ETHEREUM:0xabc...") },
       async ({ owner }) => {
-        const data = await rarible.nftOwnerships.getNftOwnershipsByOwner({
+        const data = await rarible.nftCollections.getCollectionsByOwner({
           owner,
         });
-        return { content: [{ type: "json", json: data }] };
+        return {
+          content: [{ type: "text", text: JSON.stringify(data, null, 2) }],
+        };
       }
     );
 
@@ -40,10 +44,12 @@ const handler = createMcpHandler(
       "Fetch collection by id like CHAIN:0xcontract",
       { collectionId: z.string() },
       async ({ collectionId }) => {
-        const data = await rarible.collections.getCollectionById({
-          collectionId,
+        const data = await rarible.nftCollections.getCollectionById({
+          collection: collectionId,
         });
-        return { content: [{ type: "json", json: data }] };
+        return {
+          content: [{ type: "text", text: JSON.stringify(data, null, 2) }],
+        };
       }
     );
   },
